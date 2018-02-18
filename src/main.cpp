@@ -111,11 +111,16 @@ int main(int argc, char *argv[]) {
 	}
 
 	/////////////////////////////////
+	//INITIALIZE CLOTH
+	/////////////////////////////////
+	myWorld->initCloth();
+
+	/////////////////////////////////
 	//SETUP CAMERA
 	/////////////////////////////////
 	Camera* cam = new Camera();
-	cam->setDir(Vec3D(0, 0, 1));					//look along +z
-	cam->setPos(Vec3D(0,1,-5));						//start
+	cam->setDir(Vec3D(0, -0.5, 1));					//look along +z
+	cam->setPos(Vec3D(0,2,-2));						//start
 	cam->setUp(Vec3D(0, 1, 0));						//map is in xz plane
 	cam->setRight(Vec3D(1, 0, 0));				//look along +z
 

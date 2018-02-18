@@ -12,42 +12,30 @@ using namespace std;
 /*----------------------------*/
 World::World()
 {
-	objArray = new WorldObject*[100];
 	total_verts = 0;
-	cur_num_objs = 0;
+	cloth = new Cloth();
 }
 
-World::World(int max_objects)
+World::World(Cloth * c)
 {
-	objArray = new WorldObject*[max_objects];
 	total_verts = 0;
-	cur_num_objs = 0;
+	cloth = c;
 }
 
 World::~World()
 {
-	for (int i = 0; i < cur_num_objs; i++)
-	{
-		delete objArray[i];
-	}
+	delete[] modelData;
+	cloth->~Cloth();
 }
 
 /*----------------------------*/
 // SETTERS
 /*----------------------------*/
-void World::setCurNumObjs(int num)
-{
-	cur_num_objs = num;
-}
 
 
 /*----------------------------*/
 // GETTERS
 /*----------------------------*/
-int World::getCurNumObjs()
-{
-	return cur_num_objs;
-}
 
 
 /*----------------------------*/
@@ -177,7 +165,7 @@ bool World::setupGraphics()
 //also draws floor
 void World::draw(Camera * cam)
 {
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(shaderProgram); //Set the active shader (only one can be used at a time)
@@ -214,13 +202,14 @@ void World::draw(Camera * cam)
 
 	glUniform1i(uniTexID, -1); //Set texture ID to use (0 = wood texture, -1 = no texture)
 
-	for (int i = 0; i < cur_num_objs; i++)
-	{
-		objArray[i]->draw(shaderProgram);
-	}
+	cloth->draw(shaderProgram);
+}
 
-	//draw floor
-	glUniform1i(uniTexID, -1);
+void World::initCloth()
+{
+	cloth->setVertexInfo(SPHERE_START, SPHERE_VERTS);
+	cloth->initNodes();
+	cloth->initSprings();
 }
 
 /*----------------------------*/

@@ -34,9 +34,7 @@
 #include "Vec3D.h"
 #include "Camera.h"
 #include "Util.h"
-
-//objects
-#include "WorldObject.h"
+#include "Cloth.h"
 
 class World{
 private:
@@ -60,24 +58,24 @@ private:
 	GLuint tex2;
 
 	//what lives in this world
-	WorldObject ** objArray = NULL;
-	int cur_num_objs;
+	Cloth * cloth;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
 	World();
-	World(int max_objects);
+	World(Cloth * c);
 	~World();
 
 	//SETTERS
-	void setCurNumObjs(int num);
+
 
 	//GETTERS
-	int getCurNumObjs();
+
 
 	//OTHERS
 	bool loadModelData();
 	bool setupGraphics();
+	void initCloth();
 	void draw(Camera * cam);
 
 };
