@@ -14,12 +14,14 @@ World::World()
 {
 	total_verts = 0;
 	cloth = new Cloth();
+	gravity = 9.8f;
 }
 
 World::World(Cloth * c)
 {
 	total_verts = 0;
 	cloth = c;
+	gravity = 9.8f;
 }
 
 World::~World()

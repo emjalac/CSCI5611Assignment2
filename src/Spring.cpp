@@ -28,6 +28,15 @@ Spring::Spring(Node * n1, Node * n2)
 	length = 10.0f;
 }
 
+Spring::Spring(Node * n1, Node * n2, float unit)
+{
+	node1 = n1;
+	node2 = n2;
+	ks = 1.0f;
+	kd = 1.0f;
+	length = unit;
+}
+
 Spring::~Spring()
 {
 }

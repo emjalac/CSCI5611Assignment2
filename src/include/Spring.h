@@ -16,6 +16,7 @@ public:
 	//CONSTRUCTORS AND DESTRUCTORS
 	Spring();
 	Spring(Node * n1, Node * n2);
+	Spring(Node * n1, Node * n2, float unit);
 	~Spring();
 
 	//SETTERS

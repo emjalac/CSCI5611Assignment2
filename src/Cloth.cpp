@@ -58,13 +58,13 @@ Cloth::~Cloth()
 {
 	int num_nodes = num_rows * num_cols;
 	int num_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
-	// for (int i = 0; i < num_springs; i++)
-	// {
-	// 	delete springs[i];
-	// }
 	for (int i = 0; i < num_nodes; i++)
 	{
 		delete nodes[i];
+	}
+	for (int i = 0; i < num_springs; i++)
+	{
+		delete springs[i];
 	}
 }
 
@@ -112,22 +112,22 @@ void Cloth::initNodes()
 
 void Cloth::initSprings()
 {
-	//assumes nodes have already been initialized
+	//assumes nodes have already been initialized!!!
 	//vertical springs:
 	for (int i = 0; i < num_rows-1; i++)
 	{
 		for (int j = 0; j < num_cols; j++)
 		{
-			//make vertical springs from nodes
+			springs[i * num_cols + j] = new Spring(nodes[i * num_cols + j], nodes[(i + 1) * num_cols + j], unit);
 		}
 	}
 	//horizontal springs:
-	int num_vert_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
+	int num_vert_springs = (num_rows-1) * num_cols;
 	for (int i = 0; i < num_rows; i++)
 	{
 		for (int j = 0; j < num_cols-1; j++)
 		{
-			//make horizontal springs from nodes
+			springs[num_vert_springs + i * num_cols + j] = new Spring(nodes[i * num_cols + j], nodes[i * num_cols + (j + 1)], unit);
 		}
 	}
 }

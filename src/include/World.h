@@ -59,6 +59,7 @@ private:
 
 	//what lives in this world
 	Cloth * cloth;
+	float gravity;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
