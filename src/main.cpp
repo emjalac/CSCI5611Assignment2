@@ -210,6 +210,8 @@ int main(int argc, char *argv[]) {
 			framecount = 0;
 		}
 
+		myWorld->update(delta_time);
+
 		SDL_GL_SwapWindow(window);
 		framecount++;
 	}//END looping While

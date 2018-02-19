@@ -14,6 +14,8 @@ private:
 	Vec3D center;
 	float tension; //ratio between goal length and actual length of springs in string
 
+	int num_nodes;
+	int num_springs;
 	Node ** nodes = NULL;
 	Spring ** springs = NULL;
 
@@ -37,6 +39,7 @@ public:
 	void initSprings(); //must call initNodes first
 	void fixNodes();
 	void releaseNodes();
+	void update(Vec3D g_force, float dt);
 	void draw(GLuint shaderProgram);
 
 };

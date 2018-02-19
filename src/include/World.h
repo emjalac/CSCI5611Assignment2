@@ -59,7 +59,7 @@ private:
 
 	//what lives in this world
 	Cloth * cloth;
-	float gravity;
+	Vec3D gravity;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
@@ -77,6 +77,7 @@ public:
 	bool loadModelData();
 	bool setupGraphics();
 	void initCloth();
+	void update(float dt);
 	void draw(Camera * cam);
 
 };

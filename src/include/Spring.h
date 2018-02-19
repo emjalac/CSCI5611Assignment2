@@ -10,7 +10,7 @@ private:
 	Node * node2;
 	float ks; //spring force constant
 	float kd; //spring damping constant
-	float length;
+	float rest_len;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
@@ -25,12 +25,14 @@ public:
 	void setLength(float l);
 
 	//GETTERS
+	Node * getNode1();
+	Node * getNode2();
 	float getKs();
 	float getKd();
 	float getLength();
 
 	//OTHERS
-
+	Vec3D calculateForce();
 };
 
 #endif

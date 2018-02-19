@@ -108,6 +108,11 @@ float Node::getMass()
 	return mass;
 }
 
+bool Node::isFixed()
+{
+	return fixed;
+}
+
 Material Node::getMaterial()
 {
 	return mat;

@@ -39,6 +39,7 @@ public:
 	Vec3D getPos();
 	Vec3D getVel();
 	float getMass();
+	bool isFixed();
 	Material getMaterial();
 	Vec3D getSize();
 

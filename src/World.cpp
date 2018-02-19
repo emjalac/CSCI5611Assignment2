@@ -14,14 +14,14 @@ World::World()
 {
 	total_verts = 0;
 	cloth = new Cloth();
-	gravity = 9.8f;
+	gravity = Vec3D(0, -0.001f, 0);
 }
 
 World::World(Cloth * c)
 {
 	total_verts = 0;
 	cloth = c;
-	gravity = 9.8f;
+	gravity = Vec3D(0, -0.001f, 0);
 }
 
 World::~World()
@@ -212,6 +212,11 @@ void World::initCloth()
 	cloth->setVertexInfo(SPHERE_START, SPHERE_VERTS);
 	cloth->initNodes();
 	cloth->initSprings();
+}
+
+void World::update(float dt)
+{
+	cloth->update(gravity, dt);
 }
 
 /*----------------------------*/
