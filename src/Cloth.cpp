@@ -57,14 +57,9 @@ Cloth::Cloth(int rows, int cols, Vec3D pos)
 Cloth::~Cloth()
 {
 	int num_nodes = num_rows * num_cols;
-	int num_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
 	for (int i = 0; i < num_nodes; i++)
 	{
 		delete nodes[i];
-	}
-	for (int i = 0; i < num_springs; i++)
-	{
-		delete springs[i];
 	}
 }
 
