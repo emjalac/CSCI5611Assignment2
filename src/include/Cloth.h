@@ -39,6 +39,7 @@ public:
 	void initSprings(); //must call initNodes first
 	void fixNodes();
 	void releaseNodes();
+	void releaseAllNodes();
 	void update(Vec3D g_force, float dt);
 	void draw(GLuint shaderProgram);
 

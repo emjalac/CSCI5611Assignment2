@@ -13,7 +13,7 @@ using namespace std;
 World::World()
 {
 	total_verts = 0;
-	cloth = new Cloth();
+	cloth = new Cloth(20, 20);
 	gravity = Vec3D(0, -0.01f, 0);
 }
 
@@ -205,6 +205,21 @@ void World::initCloth()
 	cloth->setVertexInfo(SPHERE_START, SPHERE_VERTS);
 	cloth->initNodes();
 	cloth->initSprings();
+}
+
+void World::fixCloth()
+{
+	cloth->fixNodes();
+}
+
+void World::releaseCloth()
+{
+	cloth->releaseNodes();
+}
+
+void World::releaseClothFully()
+{
+	cloth->releaseAllNodes();
 }
 
 void World::update(float dt)

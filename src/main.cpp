@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
 	/////////////////////////////////
 	Camera* cam = new Camera();
 	cam->setDir(Vec3D(-1.5, 0, 1));					//look along +z
-	cam->setPos(Vec3D(3, 0.5, -2.5));					//start
+	cam->setPos(Vec3D(4.5, -0.5, -3.5));					//start
 	cam->setUp(Vec3D(0, 1, 0));						//map is in xz plane
 	cam->setRight(Vec3D(1, 0, 0));					//look along +z
 
@@ -263,6 +263,18 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld)
 	case SDLK_a:
 		//printf("A key pressed - step to the left\n");
 		temp_pos = pos - (step_size*right);
+		break;
+	/////////////////////////////////
+	//FIX/RELEASE CLOTH
+	/////////////////////////////////
+	case SDLK_j:
+		myWorld->fixCloth();
+		break;
+	case SDLK_k:
+		myWorld->releaseCloth();
+		break;
+	case SDLK_l:
+		myWorld->releaseClothFully();
 		break;
 	default:
 		break;

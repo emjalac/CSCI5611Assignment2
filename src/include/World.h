@@ -76,6 +76,9 @@ public:
 	bool loadModelData();
 	bool setupGraphics();
 	void initCloth();
+	void fixCloth();
+	void releaseCloth();
+	void releaseClothFully();
 	void update(float dt);
 	void draw(Camera * cam);
 
