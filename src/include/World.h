@@ -64,7 +64,6 @@ private:
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
 	World();
-	World(Cloth * c);
 	~World();
 
 	//SETTERS

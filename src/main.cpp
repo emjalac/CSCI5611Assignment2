@@ -119,10 +119,10 @@ int main(int argc, char *argv[]) {
 	//SETUP CAMERA
 	/////////////////////////////////
 	Camera* cam = new Camera();
-	cam->setDir(Vec3D(0, -0.5, 1));					//look along +z
-	cam->setPos(Vec3D(0,2,-2));						//start
+	cam->setDir(Vec3D(-1.5, 0, 1));					//look along +z
+	cam->setPos(Vec3D(3, 0.5, -2.5));					//start
 	cam->setUp(Vec3D(0, 1, 0));						//map is in xz plane
-	cam->setRight(Vec3D(1, 0, 0));				//look along +z
+	cam->setRight(Vec3D(1, 0, 0));					//look along +z
 
 	/////////////////////////////////
 	//SETUP MOUSE INITIAL STATE
@@ -209,8 +209,10 @@ int main(int argc, char *argv[]) {
 			printf("FPS: %f\n", fps);
 			framecount = 0;
 		}
-
-		myWorld->update(delta_time);
+		for (int i = 0; i < 10; i++)
+		{
+			myWorld->update(delta_time);
+		}
 
 		SDL_GL_SwapWindow(window);
 		framecount++;

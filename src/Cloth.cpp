@@ -30,7 +30,7 @@ Cloth::Cloth(int rows, int cols)
 {
 	num_rows = rows;
 	num_cols = cols;
-	unit = 1.0f;
+	unit = 0.1f;
 	center = Vec3D(0, 1, 0);
 	tension = 0.9f; //ratio between goal length and actual length of springs in row/col
 
@@ -165,11 +165,11 @@ void Cloth::update(Vec3D g_force, float dt)
 
 		if (!(n1->isFixed()))
 		{
-			temp_vel1 = temp_vel1 - dt * spr_force - dt * g_force;
+			temp_vel1 = temp_vel1 - dt * spr_force + dt * g_force;
 		}
 		if (!(n2->isFixed()))
 		{
-			temp_vel2 = temp_vel2 + dt * spr_force - dt * g_force;
+			temp_vel2 = temp_vel2 + dt * spr_force + dt * g_force;
 		}
 
 		n1->setVel(temp_vel1);

@@ -14,14 +14,7 @@ World::World()
 {
 	total_verts = 0;
 	cloth = new Cloth();
-	gravity = Vec3D(0, -0.001f, 0);
-}
-
-World::World(Cloth * c)
-{
-	total_verts = 0;
-	cloth = c;
-	gravity = Vec3D(0, -0.001f, 0);
+	gravity = Vec3D(0, -0.01f, 0);
 }
 
 World::~World()
