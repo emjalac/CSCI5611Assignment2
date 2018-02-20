@@ -14,13 +14,15 @@ World::World()
 {
 	total_verts = 0;
 	cloth = new Cloth(20, 20);
-	gravity = Vec3D(0, -0.01f, 0);
+	gravity = Vec3D(0, -0.1f, 0);
+	sphere = new Sphere(Vec3D(0, 0, -2), 1);
 }
 
 World::~World()
 {
 	delete[] modelData;
 	cloth->~Cloth();
+	sphere->~Sphere();
 }
 
 /*----------------------------*/
@@ -31,7 +33,10 @@ World::~World()
 /*----------------------------*/
 // GETTERS
 /*----------------------------*/
-
+Sphere * World::getSphere()
+{
+	return sphere;
+}
 
 /*----------------------------*/
 // OTHERS
@@ -198,6 +203,7 @@ void World::draw(Camera * cam)
 	glUniform1i(uniTexID, -1); //Set texture ID to use (0 = wood texture, -1 = no texture)
 
 	cloth->draw(shaderProgram);
+	sphere->draw(shaderProgram);
 }
 
 void World::initCloth()
@@ -205,6 +211,12 @@ void World::initCloth()
 	cloth->setVertexInfo(SPHERE_START, SPHERE_VERTS);
 	cloth->initNodes();
 	cloth->initSprings();
+}
+
+void World::initSphere()
+{
+	sphere->setVertexInfo(SPHERE_START, SPHERE_VERTS);
+	sphere->setColor(Vec3D(1, 0, 0));
 }
 
 void World::fixCloth()

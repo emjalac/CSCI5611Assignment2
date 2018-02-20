@@ -136,7 +136,7 @@ void Cloth::initSprings()
 
 void Cloth::fixNodes()
 {
-	for (int i = num_cols; i < num_nodes; i++)
+	for (int i = 0; i < num_nodes; i++)
 	{
 		nodes[i]->fix();
 	}

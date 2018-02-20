@@ -111,9 +111,10 @@ int main(int argc, char *argv[]) {
 	}
 
 	/////////////////////////////////
-	//INITIALIZE CLOTH
+	//INITIALIZE CLOTH AND SPHERE
 	/////////////////////////////////
 	myWorld->initCloth();
+	myWorld->initSphere();
 
 	/////////////////////////////////
 	//SETUP CAMERA
@@ -209,9 +210,9 @@ int main(int argc, char *argv[]) {
 			printf("FPS: %f\n", fps);
 			framecount = 0;
 		}
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 100; i++)
 		{
-			myWorld->update(delta_time);
+			myWorld->update(delta_time/40);
 		}
 
 		SDL_GL_SwapWindow(window);

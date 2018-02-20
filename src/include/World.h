@@ -35,6 +35,7 @@
 #include "Camera.h"
 #include "Util.h"
 #include "Cloth.h"
+#include "Sphere.h"
 
 class World{
 private:
@@ -60,6 +61,7 @@ private:
 	//what lives in this world
 	Cloth * cloth;
 	Vec3D gravity;
+	Sphere * sphere;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
@@ -70,12 +72,13 @@ public:
 
 
 	//GETTERS
-
+	Sphere * getSphere();
 
 	//OTHERS
 	bool loadModelData();
 	bool setupGraphics();
 	void initCloth();
+	void initSphere();
 	void fixCloth();
 	void releaseCloth();
 	void releaseClothFully();

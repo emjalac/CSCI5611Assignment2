@@ -14,8 +14,8 @@ Spring::Spring()
 {
 	node1 = new Node();
 	node2 = new Node();
-	ks = 10.0f;
-	kd = 5.0f;
+	ks = 200.0f;
+	kd = 200.0f;
 	rest_len = 1.0f;
 }
 
@@ -23,8 +23,8 @@ Spring::Spring(Node * n1, Node * n2)
 {
 	node1 = n1;
 	node2 = n2;
-	ks = 10.0f;
-	kd = 5.0f;
+	ks = 200.0f;
+	kd = 200.0f;
 	rest_len = 1.0f;
 }
 
@@ -32,8 +32,8 @@ Spring::Spring(Node * n1, Node * n2, float unit)
 {
 	node1 = n1;
 	node2 = n2;
-	ks = 10.0f;
-	kd = 5.0f;
+	ks = 200.0f;
+	kd = 200.0f;
 	rest_len = unit;
 }
 
