@@ -24,6 +24,7 @@ public:
 
   //VIRTUALS
   int getType();
+  bool collision(Vec3D p);
 
 };
 

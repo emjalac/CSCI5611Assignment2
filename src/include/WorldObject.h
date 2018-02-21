@@ -28,7 +28,7 @@ public:
 	//CONSTRUCTORS AND DESTRUCTORS
 	WorldObject();
 	WorldObject(Vec3D init_pos);
-	~WorldObject();
+	virtual ~WorldObject();
 
 	//SETTERS
 	void setPos(Vec3D p);
@@ -46,6 +46,7 @@ public:
 
 	//VIRTUAL
 	virtual int getType();
+	virtual bool collision(Vec3D p) = 0;
 
 	//OTHER
 	void draw(GLuint shaderProgram); //shared draw function among WObjs

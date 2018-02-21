@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
 		exit(0);
 	}
 
-	World* myWorld = new World();
+	World* myWorld = new World(10);
 
 	/////////////////////////////////
 	//LOAD MODEL DATA INTO WORLD
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
 	//INITIALIZE CLOTH AND SPHERE
 	/////////////////////////////////
 	myWorld->initCloth();
-	myWorld->initSphere();
+	myWorld->initWobjs();
 
 	/////////////////////////////////
 	//SETUP CAMERA

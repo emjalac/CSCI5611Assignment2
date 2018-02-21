@@ -12,17 +12,18 @@ using namespace std;
 /*----------------------------*/
 Sphere::Sphere() : WorldObject() //call parent default
 {
-  radius = 1;
+  radius = 0.5f;
 }
 
 Sphere::Sphere(Vec3D init_pos) : WorldObject(init_pos) //call parent constructor
 {
-  radius = 1;
+  radius = 0.5f;
 }
 
 Sphere::Sphere(Vec3D init_pos, float r) : WorldObject(init_pos) //call parent constructor
 {
   radius = r;
+  size = Vec3D(2*r, 2*r, 2*r);
 }
 
 Sphere::~Sphere()
@@ -56,4 +57,18 @@ float Sphere::getRadius()
 int Sphere::getType()
 {
 	return SPHERE_WOBJ;
+}
+
+bool Sphere::collision(Vec3D p)
+{
+	Vec3D vec = p - pos;
+	float dist = vec.getMagnitude();
+	if (dist < radius + .00001)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

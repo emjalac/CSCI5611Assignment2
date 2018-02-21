@@ -4,6 +4,7 @@
 #include "Vec3D.h"
 #include "Node.h"
 #include "Spring.h"
+#include "WorldObject.h"
 
 class Cloth
 {
@@ -40,7 +41,7 @@ public:
 	void fixNodes();
 	void releaseNodes();
 	void releaseAllNodes();
-	void update(Vec3D g_force, float dt);
+	void update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt);
 	void draw(GLuint shaderProgram);
 
 };

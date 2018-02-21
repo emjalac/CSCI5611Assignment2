@@ -61,24 +61,27 @@ private:
 	//what lives in this world
 	Cloth * cloth;
 	Vec3D gravity;
-	Sphere * sphere;
+	int max_num_wobjs;
+	WorldObject ** wobjs;
+	int cur_num_wobjs;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
 	World();
+	World(int max);
 	~World();
 
 	//SETTERS
 
 
 	//GETTERS
-	Sphere * getSphere();
+	WorldObject ** getWobjList();
 
 	//OTHERS
 	bool loadModelData();
 	bool setupGraphics();
 	void initCloth();
-	void initSphere();
+	void initWobjs();
 	void fixCloth();
 	void releaseCloth();
 	void releaseClothFully();

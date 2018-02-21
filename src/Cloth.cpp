@@ -158,7 +158,7 @@ void Cloth::releaseAllNodes()
 	}
 }
 
-void Cloth::update(Vec3D g_force, float dt)
+void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 {
 	//update node velocities
 	for (int i = 0; i < num_springs; i++)
@@ -184,14 +184,32 @@ void Cloth::update(Vec3D g_force, float dt)
 		n2->setVel(temp_vel2);
 	}
 	//update node positions
+	bool collided = false;
+	Vec3D n; //normal to collision
 	for (int i = 0; i < num_nodes; i++)
 	{
 		Node * cur_node = nodes[i];
 		if (!(cur_node->isFixed()))
 		{
-			Vec3D new_pos = cur_node->getPos() + dt * cur_node->getVel();
-			cur_node->setPos(new_pos);
+			Vec3D temp_pos = cur_node->getPos() + dt * cur_node->getVel();
+			for (int j = 0; j < num_wobjs; j++)
+			{
+				if (wobjs[j]->collision(temp_pos))
+				{
+					collided = true;
+					n = temp_pos - wobjs[j]->getPos();
+				}
+			}
+			if (collided)
+			{
+				cur_node->setVel(0.1 * n);
+			}
+			else
+			{
+				cur_node->setPos(temp_pos);
+			}
 		}
+		collided = false;
 	}
 }
 

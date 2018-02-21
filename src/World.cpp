@@ -15,14 +15,30 @@ World::World()
 	total_verts = 0;
 	cloth = new Cloth(20, 20);
 	gravity = Vec3D(0, -0.1f, 0);
-	sphere = new Sphere(Vec3D(0, 0, -2), 1);
+	max_num_wobjs = 100;
+	wobjs = new WorldObject*[max_num_wobjs];
+	cur_num_wobjs = 0;
+}
+
+World::World(int max)
+{
+	total_verts = 0;
+	cloth = new Cloth(20, 20);
+	gravity = Vec3D(0, -0.1f, 0);
+	max_num_wobjs = max;
+	wobjs = new WorldObject*[max_num_wobjs];
+	cur_num_wobjs = 0;
 }
 
 World::~World()
 {
 	delete[] modelData;
 	cloth->~Cloth();
-	sphere->~Sphere();
+	for (int i = 0; i < cur_num_wobjs; i++)
+	{
+		delete wobjs[i];
+	}
+	delete[] wobjs;
 }
 
 /*----------------------------*/
@@ -33,9 +49,9 @@ World::~World()
 /*----------------------------*/
 // GETTERS
 /*----------------------------*/
-Sphere * World::getSphere()
+WorldObject ** World::getWobjList()
 {
-	return sphere;
+	return wobjs;
 }
 
 /*----------------------------*/
@@ -203,7 +219,10 @@ void World::draw(Camera * cam)
 	glUniform1i(uniTexID, -1); //Set texture ID to use (0 = wood texture, -1 = no texture)
 
 	cloth->draw(shaderProgram);
-	sphere->draw(shaderProgram);
+	for (int i = 0; i < cur_num_wobjs; i++)
+	{
+		wobjs[i]->draw(shaderProgram);
+	}
 }
 
 void World::initCloth()
@@ -213,10 +232,13 @@ void World::initCloth()
 	cloth->initSprings();
 }
 
-void World::initSphere()
+void World::initWobjs()
 {
+	Sphere * sphere = new Sphere(Vec3D(0, 0, -2), 0.5);
 	sphere->setVertexInfo(SPHERE_START, SPHERE_VERTS);
 	sphere->setColor(Vec3D(1, 0, 0));
+	wobjs[cur_num_wobjs] = sphere;
+	cur_num_wobjs++;
 }
 
 void World::fixCloth()
@@ -236,7 +258,7 @@ void World::releaseClothFully()
 
 void World::update(float dt)
 {
-	cloth->update(gravity, dt);
+	cloth->update(wobjs, cur_num_wobjs, gravity, dt);
 }
 
 /*----------------------------*/
