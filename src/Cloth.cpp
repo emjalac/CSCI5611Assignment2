@@ -185,6 +185,7 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 	}
 	//update node positions
 	bool collided = false;
+	Vec3D collision_pos;
 	Vec3D n; //normal to collision
 	for (int i = 0; i < num_nodes; i++)
 	{
@@ -197,11 +198,13 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 				if (wobjs[j]->collision(temp_pos))
 				{
 					collided = true;
+					collision_pos = wobjs[j]->getCollisionPos(temp_pos);
 					n = temp_pos - wobjs[j]->getPos();
 				}
 			}
 			if (collided)
 			{
+				cur_node->setPos(collision_pos);
 				cur_node->setVel(0.1 * n);
 			}
 			else

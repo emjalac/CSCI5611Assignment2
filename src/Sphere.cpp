@@ -63,7 +63,7 @@ bool Sphere::collision(Vec3D p)
 {
 	Vec3D vec = p - pos;
 	float dist = vec.getMagnitude();
-	if (dist < radius + .00001)
+	if (dist < radius + .001)
 	{
 		return true;
 	}
@@ -71,4 +71,13 @@ bool Sphere::collision(Vec3D p)
 	{
 		return false;
 	}
+}
+
+Vec3D Sphere::getCollisionPos(Vec3D p)
+{
+	Vec3D vec = p - pos;
+	vec.normalize();
+	Vec3D xtra = .001 * vec; //make sure collision pos outside of sphere
+	Vec3D collision_pos = pos + radius * vec + xtra;
+	return collision_pos;
 }

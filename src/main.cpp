@@ -244,26 +244,43 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld)
 	Vec3D temp_dir = dir;
 	Vec3D temp_right = right;
 
+	WorldObject * wobj;
+
 	switch (event.keysym.sym)
 	{
 	/////////////////////////////////
 	//TRANSLATION WITH WASD
 	/////////////////////////////////
 	case SDLK_w:
-		//printf("W key pressed - step forward\n");
 		temp_pos = pos + (step_size*dir);
 		break;
 	case SDLK_s:
-		//printf("S key pressed - step backward\n");
 		temp_pos = pos - (step_size*dir);
 		break;
 	case SDLK_d:
-		//printf("D key pressed - step to the right\n");
 		temp_pos = pos + (step_size*right);
 		break;
 	case SDLK_a:
-		//printf("A key pressed - step to the left\n");
 		temp_pos = pos - (step_size*right);
+		break;
+	/////////////////////////////////
+	//MOVE WOBJ WITH ARROW KEYS
+	/////////////////////////////////
+	case SDLK_UP:
+		wobj = myWorld->getWobjList()[0];
+		wobj->setPos(wobj->getPos() + step_size*Vec3D(0,0,1));
+		break;
+	case SDLK_LEFT:
+		wobj = myWorld->getWobjList()[0];
+		wobj->setPos(wobj->getPos() + step_size*Vec3D(1,0,0));
+		break;
+	case SDLK_DOWN:
+		wobj = myWorld->getWobjList()[0];
+		wobj->setPos(wobj->getPos() + step_size*Vec3D(0,0,-1));
+		break;
+	case SDLK_RIGHT:
+		wobj = myWorld->getWobjList()[0];
+		wobj->setPos(wobj->getPos() + step_size*Vec3D(-1,0,0));
 		break;
 	/////////////////////////////////
 	//FIX/RELEASE CLOTH
