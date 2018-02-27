@@ -97,7 +97,7 @@ void Cloth::initNodes()
 		}
 		else
 		{
-			val = false;
+			val = true; //used to be false but starting with nodes not fixed blows up the system, oops
 		}
 		for (int j = 0; j < num_cols; j++)
 		{
@@ -173,11 +173,11 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 
 		if (!(n1->isFixed()))
 		{
-			temp_vel1 = temp_vel1 - dt * spr_force + dt * g_force;
+			temp_vel1 = temp_vel1 - dt * (.5 * spr_force) + dt * g_force;
 		}
 		if (!(n2->isFixed()))
 		{
-			temp_vel2 = temp_vel2 + dt * spr_force + dt * g_force;
+			temp_vel2 = temp_vel2 + dt * (.5 * spr_force) + dt * g_force;
 		}
 
 		n1->setVel(temp_vel1);
@@ -216,10 +216,26 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 	}
 }
 
-void Cloth::draw(GLuint shaderProgram)
+void Cloth::draw(GLuint shaderProgram, GLuint model_vbo, GLuint line_vbo)
 {
+	//Set vbo for nodes
+	glBindBuffer(GL_ARRAY_BUFFER, model_vbo);
+	//Define position attribute
+	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
+	//Draw
 	for (int i = 0; i < num_nodes; i++)
 	{
 		nodes[i]->draw(shaderProgram);
+	}
+	
+	//Set vbo for springs
+	glBindBuffer(GL_ARRAY_BUFFER, line_vbo);
+	//Define position attribute
+	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+	//Draw
+	for (int i = 0; i < num_springs; i++)
+	{
+		springs[i]->draw(shaderProgram);
 	}
 }

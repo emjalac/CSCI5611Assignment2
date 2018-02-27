@@ -40,7 +40,7 @@
 class World{
 private:
 	int total_verts;
-	float* modelData;
+	float * modelData; 
 
 	//modelData indices
 	int CUBE_START = 0;
@@ -50,7 +50,8 @@ private:
 
 	//VAO and VBO GLuints
 	GLuint vao;
-	GLuint vbo[1];
+	GLuint model_vbo[1];
+	GLuint line_vbo[1];
 
 	//Shader and Texture GLuints
 	GLuint shaderProgram;

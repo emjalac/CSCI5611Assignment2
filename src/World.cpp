@@ -110,23 +110,6 @@ bool World::loadModelData()
 bool World::setupGraphics()
 {
 	/////////////////////////////////
-	//BUILD VERTEX ARRAY OBJECT
-	/////////////////////////////////
-	//This stores the VBO and attribute mappings in one object
-	glGenVertexArrays(1, &vao); //Create a VAO
-	glBindVertexArray(vao); //Bind the above created VAO to the current context
-	cout << "VAO bound to current context" << endl;
-
-	/////////////////////////////////
-	//BUILD VERTEX BUFFER OBJECT
-	/////////////////////////////////
-	//Allocate memory on the graphics card to store geometry (vertex buffer object)
-	glGenBuffers(1, vbo);  //Create 1 buffer called vbo
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); //Set the vbo as the active array buffer (Only one buffer can be active at a time)
-	glBufferData(GL_ARRAY_BUFFER, total_verts * 8 * sizeof(float), modelData, GL_STATIC_DRAW); //upload vertices to vbo
-	cout << "VBO setup with model data" << endl;
-
-	/////////////////////////////////
 	//SETUP SHADERS
 	/////////////////////////////////
 	#ifdef __APPLE__
@@ -153,12 +136,27 @@ bool World::setupGraphics()
 		return false;
 	}
 
+	/////////////////////////////////
+	//BUILD VERTEX ARRAY OBJECT
+	/////////////////////////////////
+	//This stores the VBO and attribute mappings in one object
+	glGenVertexArrays(2, &vao); //Create a VAO
+	glBindVertexArray(vao); //Bind the above created VAO to the current context
+	cout << "VAO bound to current context" << endl;
+
+	/////////////////////////////////
+	//BUILD VERTEX BUFFER OBJECTS
+	/////////////////////////////////
+	//Allocate memory on the graphics card to store geometry (vertex buffer object)
+	glGenBuffers(1, model_vbo);  //Create 1 buffer called model_vbo
+	glBindBuffer(GL_ARRAY_BUFFER, model_vbo[0]); //Set the buffer as the active array buffer (Only one buffer can be active at a time)
+	glBufferData(GL_ARRAY_BUFFER, total_verts * 8 * sizeof(float), modelData, GL_STATIC_DRAW); //upload vertices to vbo
+	cout << "First VBO set up with model data" << endl;
+
 	//Tell OpenGL how to set fragment shader input
 	//first 3 floats are position coords
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
-	//Attribute, vals/attrib., type, normalized?, stride, offset
-	//Binds to VBO current GL_ARRAY_BUFFER
+	//the specifics of position attribute will be specified prior to drawing depending on which vbo is being used
 	glEnableVertexAttribArray(posAttrib);
 
 	//next 2 floats are texture coords (u,v)
@@ -170,6 +168,12 @@ bool World::setupGraphics()
 	GLint normAttrib = glGetAttribLocation(shaderProgram, "inNormal");
 	glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(normAttrib);
+
+	//Allocate memory for second vbo
+	glGenBuffers(1, line_vbo);  //Create 1 buffer called line_vbo
+	glBindBuffer(GL_ARRAY_BUFFER, line_vbo[0]); //Set the buffer as the active array buffer (Only one buffer can be active at a time)
+	//vertex data for line_vbo will be set later and constantly updated to draw moving lines
+	cout << "Second VBO set up" << endl;
 
 	glBindVertexArray(0); //Unbind the VAO in case we want to create a new one
 
@@ -218,9 +222,12 @@ void World::draw(Camera * cam)
 
 	glUniform1i(uniTexID, -1); //Set texture ID to use (0 = wood texture, -1 = no texture)
 
-	cloth->draw(shaderProgram);
+	cloth->draw(shaderProgram, model_vbo[0], line_vbo[0]);
 	for (int i = 0; i < cur_num_wobjs; i++)
 	{
+		glBindBuffer(GL_ARRAY_BUFFER, model_vbo[0]);
+		GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
 		wobjs[i]->draw(shaderProgram);
 	}
 }

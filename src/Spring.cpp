@@ -103,3 +103,29 @@ Vec3D Spring::calculateForce()
 	Vec3D force = (spring_force - damping_force) * dir;
 	return force;
 }
+
+void Spring::draw(GLuint shaderProgram)
+{
+	Vec3D pos1 = node1->getPos();
+	Vec3D pos2 = 2 * node2->getPos() - pos1;
+
+	float vertices[6] = {
+		pos1.getX(), pos1.getY(), pos1.getZ(),
+		pos2.getX(), pos2.getY(), pos2.getZ()
+	};
+
+	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), vertices, GL_STATIC_DRAW);
+
+	GLint uniModel = glGetUniformLocation(shaderProgram, "model");
+
+	glm::mat4 model;
+	glm::vec3 size_v = util::vec3DtoGLM(Vec3D(.5,.5,.5));
+	glm::vec3 pos_v = util::vec3DtoGLM(pos1);
+
+	//build model mat specific to this spring
+	model = glm::scale(model, size_v);
+	model = glm::translate(model, pos_v);
+	glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+
+	glDrawArrays(GL_LINES, 0, 2);
+}

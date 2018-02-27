@@ -74,7 +74,7 @@ const float step_size = 0.15f;
 /*=============================*/
 // Helper Functions
 /*=============================*/
-void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld);
+void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld, float dt);
 void mouseMove(SDL_MouseMotionEvent & event, Camera * cam, float horizontal_angle, float vertical_angle);
 
 /*==============================================================*/
@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
 				//check for escape or fullscreen before checking other commands
 				if (windowEvent.key.keysym.sym == SDLK_ESCAPE) quit = true; //Exit event loop
 				else if (windowEvent.key.keysym.sym == SDLK_f) fullscreen = !fullscreen;
-				onKeyDown(windowEvent.key, cam, myWorld);
+				onKeyDown(windowEvent.key, cam, myWorld, delta_time);
 				break;
 			case SDL_MOUSEMOTION:
 				if (recentering)
@@ -210,9 +210,9 @@ int main(int argc, char *argv[]) {
 			printf("FPS: %f\n", fps);
 			framecount = 0;
 		}
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 50; i++)
 		{
-			myWorld->update(delta_time/40);
+			myWorld->update(delta_time/20);
 		}
 
 		SDL_GL_SwapWindow(window);
@@ -232,7 +232,7 @@ int main(int argc, char *argv[]) {
 // onKeyDown : determine which key was pressed and how to edit
 //				current translation or rotation parameters
 /*--------------------------------------------------------------*/
-void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld)
+void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld, float dt)
 {
 	Vec3D pos = cam->getPos();
 	Vec3D dir = cam->getDir();
@@ -269,18 +269,22 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld)
 	case SDLK_UP:
 		wobj = myWorld->getWobjList()[0];
 		wobj->setPos(wobj->getPos() + step_size*Vec3D(0,0,1));
+		myWorld->update(dt/100);
 		break;
 	case SDLK_LEFT:
 		wobj = myWorld->getWobjList()[0];
 		wobj->setPos(wobj->getPos() + step_size*Vec3D(1,0,0));
+		myWorld->update(dt/100);
 		break;
 	case SDLK_DOWN:
 		wobj = myWorld->getWobjList()[0];
 		wobj->setPos(wobj->getPos() + step_size*Vec3D(0,0,-1));
+		myWorld->update(dt/100);
 		break;
 	case SDLK_RIGHT:
 		wobj = myWorld->getWobjList()[0];
 		wobj->setPos(wobj->getPos() + step_size*Vec3D(-1,0,0));
+		myWorld->update(dt/100);
 		break;
 	/////////////////////////////////
 	//FIX/RELEASE CLOTH

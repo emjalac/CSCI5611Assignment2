@@ -33,6 +33,7 @@ public:
 
 	//OTHERS
 	Vec3D calculateForce();
+	void draw(GLuint shaderprogram);
 };
 
 #endif
