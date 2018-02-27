@@ -22,7 +22,11 @@ Cloth::Cloth()
 
 	num_nodes = num_rows * num_cols;
 	num_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
-	nodes = new Node*[num_nodes];
+	nodes = new Node**[num_rows];
+	for (int i = 0; i < num_rows; i++)
+	{
+		nodes[i] = new Node*[num_cols];
+	}
 	springs = new Spring*[num_springs];
 }
 
@@ -39,7 +43,11 @@ Cloth::Cloth(int rows, int cols)
 
 	num_nodes = num_rows * num_cols;
 	num_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
-	nodes = new Node*[num_nodes];
+	nodes = new Node**[num_rows];
+	for (int i = 0; i < num_rows; i++)
+	{
+		nodes[i] = new Node*[num_cols];
+	}
 	springs = new Spring*[num_springs];
 }
 
@@ -56,15 +64,22 @@ Cloth::Cloth(int rows, int cols, Vec3D pos)
 
 	num_nodes = num_rows * num_cols;
 	num_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
-	nodes = new Node*[num_nodes];
+	nodes = new Node**[num_rows];
+	for (int i = 0; i < num_rows; i++)
+	{
+		nodes[i] = new Node*[num_cols];
+	}
 	springs = new Spring*[num_springs];
 }
 
 Cloth::~Cloth()
 {
-	for (int i = 0; i < num_nodes; i++)
+	for (int i = 0; i < num_rows; i++)
 	{
-		delete nodes[i];
+		for (int j = 0; j < num_cols; j++)
+		{
+			delete nodes[i][j];
+		}
 	}
 }
 
@@ -102,9 +117,9 @@ void Cloth::initNodes()
 		for (int j = 0; j < num_cols; j++)
 		{
 			Vec3D pos = temp_pos + Vec3D(j * unit, 0, i * unit);
-			nodes[i * num_cols + j] = new Node(pos, val);
-			nodes[i * num_cols + j]->setVertexInfo(start_vertex_index, total_vertices);
-			nodes[i * num_cols + j]->setColor(Vec3D(0.5, 0, 1));
+			nodes[i][j] = new Node(pos, val);
+			nodes[i][j]->setVertexInfo(start_vertex_index, total_vertices);
+			nodes[i][j]->setColor(Vec3D(0.5, 0, 1));
 		}
 	}
 
@@ -120,7 +135,7 @@ void Cloth::initSprings()
 	{
 		for (int j = 0; j < num_cols; j++)
 		{
-			springs[i * num_cols + j] = new Spring(nodes[i * num_cols + j], nodes[(i + 1) * num_cols + j], unit);
+			springs[i * num_cols + j] = new Spring(nodes[i][j], nodes[i + 1][j], unit);
 		}
 	}
 	//horizontal springs:
@@ -129,32 +144,41 @@ void Cloth::initSprings()
 	{
 		for (int j = 0; j < num_cols-1; j++)
 		{
-			springs[num_vert_springs + i * (num_cols-1) + j] = new Spring(nodes[i * num_cols + j], nodes[i * num_cols + (j + 1)], unit);
+			springs[num_vert_springs + i * (num_cols-1) + j] = new Spring(nodes[i][j], nodes[i][j + 1], unit);
 		}
 	}
 }
 
 void Cloth::fixNodes()
 {
-	for (int i = 0; i < num_nodes; i++)
+	for (int i = 0; i < num_rows; i++)
 	{
-		nodes[i]->fix();
+		for (int j = 0; j < num_cols; j++)
+		{
+			nodes[i][j]->fix();
+		}
 	}
 }
 
 void Cloth::releaseNodes()
 {
-	for (int i = num_cols; i < num_nodes; i++)
+	for (int i = 1; i < num_rows; i++)
 	{
-		nodes[i]->release();
+		for (int j = 0; j < num_cols; j++)
+		{
+			nodes[i][j]->release();
+		}
 	}
 }
 
 void Cloth::releaseAllNodes()
 {
-	for (int i = 0; i < num_nodes; i++)
+	for (int i = 0; i < num_rows; i++)
 	{
-		nodes[i]->release();
+		for (int j = 0; j < num_cols; j++)
+		{
+			nodes[i][j]->release();
+		}
 	}
 }
 
@@ -187,32 +211,35 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 	bool collided = false;
 	Vec3D collision_pos;
 	Vec3D n; //normal to collision
-	for (int i = 0; i < num_nodes; i++)
+	for (int i = 0; i < num_rows; i++)
 	{
-		Node * cur_node = nodes[i];
-		if (!(cur_node->isFixed()))
+		for (int j = 0; j < num_cols; j++)
 		{
-			Vec3D temp_pos = cur_node->getPos() + dt * cur_node->getVel();
-			for (int j = 0; j < num_wobjs; j++)
+			Node * cur_node = nodes[i][j];
+			if (!(cur_node->isFixed()))
 			{
-				if (wobjs[j]->collision(temp_pos))
+				Vec3D temp_pos = cur_node->getPos() + dt * cur_node->getVel();
+				for (int k = 0; k < num_wobjs; k++)
 				{
-					collided = true;
-					collision_pos = wobjs[j]->getCollisionPos(temp_pos);
-					n = temp_pos - wobjs[j]->getPos();
+					if (wobjs[k]->collision(temp_pos))
+					{
+						collided = true;
+						collision_pos = wobjs[k]->getCollisionPos(temp_pos);
+						n = temp_pos - wobjs[k]->getPos();
+					}
+				}
+				if (collided)
+				{
+					cur_node->setPos(collision_pos);
+					cur_node->setVel(0.1 * n);
+				}
+				else
+				{
+					cur_node->setPos(temp_pos);
 				}
 			}
-			if (collided)
-			{
-				cur_node->setPos(collision_pos);
-				cur_node->setVel(0.1 * n);
-			}
-			else
-			{
-				cur_node->setPos(temp_pos);
-			}
+			collided = false;
 		}
-		collided = false;
 	}
 }
 
@@ -224,9 +251,12 @@ void Cloth::draw(GLuint shaderProgram, GLuint model_vbo, GLuint line_vbo)
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
 	//Draw
-	for (int i = 0; i < num_nodes; i++)
+	for (int i = 0; i < num_rows; i++)
 	{
-		nodes[i]->draw(shaderProgram);
+		for (int j = 0; j < num_cols; j++)
+		{
+			nodes[i][j]->draw(shaderProgram);
+		}
 	}
 	
 	//Set vbo for springs

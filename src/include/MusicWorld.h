@@ -64,7 +64,7 @@ private:
 	String * string2;
 	String * string3;
 	String * string4;
-	int node_index[4];
+	int node_index;
 	bool audio;
 
 public:
@@ -74,9 +74,12 @@ public:
 	~MusicWorld();
 
 	//SETTERS
+	void setNodeIndex(int i);
 
 	//GETTERS
 	float getStringsLength();
+	int getNodeIndex();
+	int getNodesPerString();
 
 	//OTHERS
 	bool loadModelData();

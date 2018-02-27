@@ -17,7 +17,7 @@ private:
 
 	int num_nodes;
 	int num_springs;
-	Node ** nodes = NULL;
+	Node *** nodes = NULL;
 	Spring ** springs = NULL;
 
 	int start_vertex_index;	//index where vertices start in modelData array for nodes

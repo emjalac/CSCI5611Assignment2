@@ -18,10 +18,7 @@ MusicWorld::MusicWorld()
 	string2 = new String(nodes_per_string, Vec3D(.25,0,0));
 	string3 = new String(nodes_per_string, Vec3D(.5,0,0));
 	string4 = new String(nodes_per_string, Vec3D(.75,0,0));
-	for (int i = 0; i < 4; i++)
-	{
-		node_index[i] = nodes_per_string/2;
-	}
+	node_index = nodes_per_string/2;
 	audio = true;
 }
 
@@ -33,10 +30,7 @@ MusicWorld::MusicWorld(int num)
 	string2 = new String(nodes_per_string, Vec3D(.25,0,0));
 	string3 = new String(nodes_per_string, Vec3D(.5,0,0));
 	string4 = new String(nodes_per_string, Vec3D(.75,0,0));
-	for (int i = 0; i < 4; i++)
-	{
-		node_index[i] = nodes_per_string/2;
-	}
+	node_index = nodes_per_string/2;
 	audio = true;
 }
 
@@ -52,7 +46,10 @@ MusicWorld::~MusicWorld()
 /*----------------------------*/
 // SETTERS
 /*----------------------------*/
-
+void MusicWorld::setNodeIndex(int i)
+{
+	node_index = i;
+}
 
 /*----------------------------*/
 // GETTERS
@@ -63,6 +60,16 @@ float MusicWorld::getStringsLength()
 	int num_nodes = string1->getNumNodes();
 	float unit = string1->getUnit();
 	return (num_nodes * unit);
+}
+
+int MusicWorld::getNodeIndex()
+{
+	return node_index;
+}
+
+int MusicWorld::getNodesPerString()
+{
+	return nodes_per_string;
 }
 
 /*----------------------------*/
@@ -279,10 +286,9 @@ void MusicWorld::pluckString(int s) //s indicates which string to pluck
 	}//END polling switch
 	float strength = 0.1f;
 	double d = strength * cur_string->getRestLen(); //scale pluck with string size
-	int index = node_index[s];
 	for (int i = 0; i < 5; i++)
 	{
-		int which_node = index + i - 2;
+		int which_node = node_index + i - 2;
 		if (which_node > 0 && which_node < nodes_per_string-1) //a nonfixed node
 		{
 			cur_node = cur_string->getNode(which_node);
@@ -316,10 +322,9 @@ void MusicWorld::strikeString(int s) //s indicates which string to strike
 	}//END polling switch
 	float strength = 0.1f;
 	double d = strength * 20; //scale pluck with string size
-	int index = node_index[s];
 	for (int i = 0; i < 5; i++)
 	{
-		int which_node = index + i - 2;
+		int which_node = node_index + i - 2;
 		if (which_node > 0 && which_node < nodes_per_string-1) //a nonfixed node
 		{
 			cur_node = cur_string->getNode(which_node);
@@ -331,7 +336,7 @@ void MusicWorld::strikeString(int s) //s indicates which string to strike
 
 void MusicWorld::updateObjs(float dt)
 {
-	dt = .0001;
+	dt = .0001; //override given dt
 
 	//update string positions
 	string1->update(dt);
