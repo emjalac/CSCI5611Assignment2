@@ -84,7 +84,8 @@ public:
 	void initStrings();
 	void pluckString(int s); //s indicates which string to pluck
 	void strikeString(int s); //s indicates which string to strike
-	float update(float dt);
+	void updateObjs(float dt);
+	float updateAudio();
 	void draw(Camera * cam);
 
 };

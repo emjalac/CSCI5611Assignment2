@@ -329,10 +329,19 @@ void MusicWorld::strikeString(int s) //s indicates which string to strike
 	}
 }
 
-float MusicWorld::update(float dt)
+void MusicWorld::updateObjs(float dt)
 {
 	dt = .0001;
 
+	//update string positions
+	string1->update(dt);
+	string2->update(dt);
+	string3->update(dt);
+	string4->update(dt);
+}
+
+float MusicWorld::updateAudio()
+{
 	float val = 0;
 
 	if (audio)
@@ -343,11 +352,6 @@ float MusicWorld::update(float dt)
 		val = .5*mid_yvel + .25*end1_yvel + .25*end2_yvel;
 	}
 
-	//update string positions
-	string1->update(dt);
-	// string2->update(dt);
-	// string3->update(dt);
-	// string4->update(dt);
 	return val;
 }
 

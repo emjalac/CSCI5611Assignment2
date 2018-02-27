@@ -86,7 +86,7 @@ const int update_count = 2000; //should be larger (2000) but getting errors
 // Helper Functions
 /*=============================*/
 void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, MusicWorld* myWorld, float dt);
-void audioCallback(void * _beeper, Uint8 * _stream, int _len);
+void audioCallback(void*, Uint8*, int);
 void mouseMove(SDL_MouseMotionEvent & event, Camera * cam, float horizontal_angle, float vertical_angle);
 
 /*==============================================================*/
@@ -148,6 +148,10 @@ int main(int argc, char *argv[]) {
 
 	//unpause audio
 	SDL_PauseAudio(0);
+
+	for (int i = 0; i < buffSize; i++){
+	   soundBuff[i] = 0;
+	}
 
 	/////////////////////////////////
 	//SETUP CAMERA
@@ -248,10 +252,14 @@ int main(int argc, char *argv[]) {
 
 		for (int i = 0; i < update_count; i++)
 		{
-			sound_val = myWorld->update(delta_time);
-			SDL_LockAudio();
-			soundBuff[lastS++] = sound_val;
-			SDL_UnlockAudio();
+			if (lastS - lastP <= 2 * 2048 && lastS + update_count < buffSize)
+			{
+				sound_val = myWorld->updateAudio();
+				SDL_LockAudio();
+				soundBuff[lastS++] = sound_val;
+				SDL_UnlockAudio();
+			}
+			myWorld->updateObjs(delta_time);
 		}
 
 		SDL_GL_SwapWindow(window);
