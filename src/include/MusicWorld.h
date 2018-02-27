@@ -65,6 +65,7 @@ private:
 	String * string3;
 	String * string4;
 	int node_index[4];
+	bool audio;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
@@ -75,6 +76,7 @@ public:
 	//SETTERS
 
 	//GETTERS
+	float getStringsLength();
 
 	//OTHERS
 	bool loadModelData();
@@ -82,7 +84,7 @@ public:
 	void initStrings();
 	void pluckString(int s); //s indicates which string to pluck
 	void strikeString(int s); //s indicates which string to strike
-	void update(float dt);
+	float update(float dt);
 	void draw(Camera * cam);
 
 };

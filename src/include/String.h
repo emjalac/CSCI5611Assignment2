@@ -12,7 +12,7 @@ private:
 	int num_nodes;
 	float unit; //distance between nodes in rows/cols (also: length of spring)
 	Vec3D center;
-	float tension; //ratio between goal length and actual length of springs in string
+	float rest_len;
 
 	int num_springs;
 	Node ** nodes = NULL;
@@ -32,6 +32,10 @@ public:
 	void setVertexInfo(int start, int total);
 
 	//GETTERS
+	int getNumNodes();
+	float getUnit();
+	Node * getNode(int i);
+	float getRestLen();
 
 	//OTHERS
 	void initNodes();

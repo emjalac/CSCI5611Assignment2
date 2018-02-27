@@ -13,21 +13,31 @@ using namespace std;
 MusicWorld::MusicWorld()
 {
 	total_verts = 0;
-	nodes_per_string = 20;
+	nodes_per_string = 20; //must be even
 	string1 = new String(nodes_per_string, Vec3D(0,0,0));
 	string2 = new String(nodes_per_string, Vec3D(.25,0,0));
 	string3 = new String(nodes_per_string, Vec3D(.5,0,0));
 	string4 = new String(nodes_per_string, Vec3D(.75,0,0));
+	for (int i = 0; i < 4; i++)
+	{
+		node_index[i] = nodes_per_string/2;
+	}
+	audio = true;
 }
 
 MusicWorld::MusicWorld(int num)
 {
 	total_verts = 0;
-	nodes_per_string = num;
+	nodes_per_string = num; //must be even
 	string1 = new String(nodes_per_string, Vec3D(0,0,0));
 	string2 = new String(nodes_per_string, Vec3D(.25,0,0));
 	string3 = new String(nodes_per_string, Vec3D(.5,0,0));
 	string4 = new String(nodes_per_string, Vec3D(.75,0,0));
+	for (int i = 0; i < 4; i++)
+	{
+		node_index[i] = nodes_per_string/2;
+	}
+	audio = true;
 }
 
 MusicWorld::~MusicWorld()
@@ -47,7 +57,13 @@ MusicWorld::~MusicWorld()
 /*----------------------------*/
 // GETTERS
 /*----------------------------*/
-
+float MusicWorld::getStringsLength()
+{
+	//assumed all four strings have same length
+	int num_nodes = string1->getNumNodes();
+	float unit = string1->getUnit();
+	return (num_nodes * unit);
+}
 
 /*----------------------------*/
 // OTHERS
@@ -239,12 +255,100 @@ void MusicWorld::initStrings()
 	string4->initSprings();
 }
 
-void MusicWorld::update(float dt)
+void MusicWorld::pluckString(int s) //s indicates which string to pluck
 {
+	String * cur_string;
+	Node * cur_node;
+	switch (s)
+	{
+	case 1:
+		cur_string = string1;
+		break;
+	case 2:
+		cur_string = string2;
+		break;
+	case 3:
+		cur_string = string3;
+		break;
+	case 4:
+		cur_string = string4;
+		break;
+	default:
+		cur_string = string1;
+		break;
+	}//END polling switch
+	float strength = 0.1f;
+	double d = strength * cur_string->getRestLen(); //scale pluck with string size
+	int index = node_index[s];
+	for (int i = 0; i < 5; i++)
+	{
+		int which_node = index + i - 2;
+		if (which_node > 0 && which_node < nodes_per_string-1) //a nonfixed node
+		{
+			cur_node = cur_string->getNode(which_node);
+			if (i == 2) cur_node->setPos(cur_node->getPos() + Vec3D(0,d,0));
+			else cur_node->setPos(cur_node->getPos() + Vec3D(0,d/2,0));
+		}
+	}
+}	
+
+void MusicWorld::strikeString(int s) //s indicates which string to strike
+{
+	String * cur_string;
+	Node * cur_node;
+	switch (s)
+	{
+	case 1:
+		cur_string = string1;
+		break;
+	case 2:
+		cur_string = string2;
+		break;
+	case 3:
+		cur_string = string3;
+		break;
+	case 4:
+		cur_string = string4;
+		break;
+	default:
+		cur_string = string1;
+		break;
+	}//END polling switch
+	float strength = 0.1f;
+	double d = strength * 20; //scale pluck with string size
+	int index = node_index[s];
+	for (int i = 0; i < 5; i++)
+	{
+		int which_node = index + i - 2;
+		if (which_node > 0 && which_node < nodes_per_string-1) //a nonfixed node
+		{
+			cur_node = cur_string->getNode(which_node);
+			if (i == 2) cur_node->setVel(cur_node->getVel() + Vec3D(0,d,0));
+			else cur_node->setVel(cur_node->getVel() + Vec3D(0,d/2,0));
+		}
+	}
+}
+
+float MusicWorld::update(float dt)
+{
+	dt = .0001;
+
+	float val = 0;
+
+	if (audio)
+	{
+		float mid_yvel = string1->getNode(nodes_per_string/2)->getVel().getY();
+		float end1_yvel = string1->getNode(nodes_per_string/2 + 7)->getVel().getY();
+		float end2_yvel = string1->getNode(nodes_per_string/2 - 7)->getVel().getY();
+		val = .5*mid_yvel + .25*end1_yvel + .25*end2_yvel;
+	}
+
+	//update string positions
 	string1->update(dt);
-	string2->update(dt);
-	string3->update(dt);
-	string4->update(dt);
+	// string2->update(dt);
+	// string3->update(dt);
+	// string4->update(dt);
+	return val;
 }
 
 /*----------------------------*/

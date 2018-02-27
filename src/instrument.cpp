@@ -69,13 +69,18 @@ string fragFile = "Shaders/phong.frag";
 #endif
 
 //audio globals
-const int SamplesPerSecond = 48000;
-const short ToneVolume = 2000;
-const unsigned RunningSampleIndex = 0;
+int SamplesPerSecond = 48000;
+short ToneVolume = 2000;
+unsigned RunningSampleIndex = 0;
+const int buffSize = 1 * 104 * 1024;
+float soundBuff[buffSize];
+int lastS = 0;
+static int lastP = 0;
 
 //other globals
 const float mouse_speed = 0.05f;
 const float step_size = 0.15f;
+const int update_count = 2000; //should be larger (2000) but getting errors
 
 /*=============================*/
 // Helper Functions
@@ -102,7 +107,7 @@ int main(int argc, char *argv[]) {
 		exit(0);
 	}
 
-	MusicWorld * myWorld = new MusicWorld(20);
+	MusicWorld * myWorld = new MusicWorld(20); //must be even (number of nodes per string)
 
 	/////////////////////////////////
 	//LOAD MODEL DATA INTO WORLD
@@ -141,6 +146,7 @@ int main(int argc, char *argv[]) {
 	//https://wiki.libsdl.org/SDL_OpenAudioDevice
 	SDL_OpenAudioDevice(0, 0, &desiredSpec, &obtainedSpec, 0); //CHECK THIS
 
+	//unpause audio
 	SDL_PauseAudio(0);
 
 	/////////////////////////////////
@@ -181,6 +187,7 @@ int main(int argc, char *argv[]) {
 	bool mouse_active = false;
 	bool recentering = true;
 	float last_time = SDL_GetTicks(),	delta_time = 0,	new_time = 0;
+	float sound_val;
 
 	//FPS calculations
 	float framecount = 0;
@@ -229,6 +236,7 @@ int main(int argc, char *argv[]) {
 		new_time = SDL_GetTicks();
 		delta_time = (new_time - last_time) / 1000.0;
 		last_time = new_time;
+		//printf("dt is %f\n", delta_time);
 
 		if ((new_time - last_fps_print) / 1000.0 >= 1.0) //only print every 1+ seconds
 		{
@@ -237,9 +245,13 @@ int main(int argc, char *argv[]) {
 			printf("FPS: %f\n", fps);
 			framecount = 0;
 		}
-		for (int i = 0; i < 20; i++)
+
+		for (int i = 0; i < update_count; i++)
 		{
-			myWorld->update(delta_time/20);
+			sound_val = myWorld->update(delta_time);
+			SDL_LockAudio();
+			soundBuff[lastS++] = sound_val;
+			SDL_UnlockAudio();
 		}
 
 		SDL_GL_SwapWindow(window);
@@ -288,6 +300,15 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, MusicWorld* myWorld, floa
 	case SDLK_a:
 		temp_pos = pos - (step_size*right);
 		break;
+	/////////////////////////////////
+	//PLUCK/STRIKE STRINGS
+	/////////////////////////////////
+	case SDLK_j:
+		myWorld->pluckString(1);
+		break;
+	case SDLK_k:
+		myWorld->strikeString(1);
+		break;
 	default:
 		break;
 	}//END switch key press
@@ -304,7 +325,37 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, MusicWorld* myWorld, floa
 
 void audioCallback(void * _beeper, Uint8 * _stream, int _len)
 {
+	short * stream = (short *) _stream;
+	int len = _len / 2;
 
+	int i;
+	for (i = 0; i < len && (lastP < lastS); i++)
+	{
+		if (lastS > buffSize) exit(0);
+		lastP++;
+		double amp = ToneVolume * 2 * soundBuff[lastP]; //set amplitude
+		amp = amp > 3*ToneVolume ? 3*ToneVolume : amp < -3*ToneVolume ? -3*ToneVolume : amp; //clamp amplitude
+		stream[i] = amp;
+	}
+	for (; i < len; i++) //if we missed a frame...
+	{
+		stream[i] = stream[i-1]; //repeat last tone
+	}
+	printf("Buffer size is %d\n", lastS-lastP);
+	if (lastS + len > buffSize)
+	{
+		if (lastS > lastP) //looping
+		{
+			memcpy(&soundBuff[0], &soundBuff[lastP], sizeof(float)*(lastS-lastP));
+			lastS = lastS-lastP;
+		}
+		else
+		{
+			lastS = 0;
+		}
+		lastP = 0;
+		memset(&soundBuff[lastS], 0, sizeof(float)*(buffSize-lastS));
+	}
 }
 
 /*--------------------------------------------------------------*/

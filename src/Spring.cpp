@@ -16,7 +16,8 @@ Spring::Spring()
 	node2 = new Node();
 	ks = 200.0f;
 	kd = 200.0f;
-	rest_len = 1.0f;
+	tension = 0.85f;
+	rest_len = tension * 1.0f;
 }
 
 Spring::Spring(Node * n1, Node * n2)
@@ -25,7 +26,8 @@ Spring::Spring(Node * n1, Node * n2)
 	node2 = n2;
 	ks = 200.0f;
 	kd = 200.0f;
-	rest_len = 1.0f;
+	tension = 0.85f;
+	rest_len = tension * 1.0f;
 }
 
 Spring::Spring(Node * n1, Node * n2, float unit)
@@ -34,7 +36,8 @@ Spring::Spring(Node * n1, Node * n2, float unit)
 	node2 = n2;
 	ks = 200.0f;
 	kd = 200.0f;
-	rest_len = unit;
+	tension = 0.85f;
+	rest_len = tension * unit;
 }
 
 Spring::~Spring()
@@ -54,7 +57,7 @@ void Spring::setKd(float k)
 	kd = k;
 }
 
-void Spring::setLength(float l)
+void Spring::setRestLen(float l)
 {
 	rest_len = l;
 }
@@ -82,7 +85,7 @@ float Spring::getKd()
 	return kd;
 }
 
-float Spring::getLength()
+float Spring::getRestLen()
 {
 	return rest_len;
 }
@@ -92,10 +95,11 @@ float Spring::getLength()
 /*----------------------------*/
 Vec3D Spring::calculateForce()
 {
+
 	Vec3D spring_vec = node1->getPos() - node2->getPos();
 	float spring_len = spring_vec.getMagnitude();
 	//printf("spring length is %f\n", spring_len);
-	Vec3D dir = (1 / spring_len) * spring_vec;
+	Vec3D dir = (1 / rest_len) * spring_vec;
 	float vel1 = dotProduct(dir, node1->getVel());
 	float vel2 = dotProduct(dir, node2->getVel());
 	float spring_force = -ks * (rest_len - spring_len);

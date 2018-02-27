@@ -11,10 +11,10 @@
 /*----------------------------*/
 String::String()
 {
-	num_nodes = 10;
+	num_nodes = 20; //must be even
 	unit = 0.05f;
 	center = Vec3D(0, 1, 0);
-	tension = 0.9f; //ratio between goal length and actual length of springs in row/col
+	rest_len = 0;
 
 	start_vertex_index = 0;
 	total_vertices = 0;
@@ -26,10 +26,10 @@ String::String()
 
 String::String(int num)
 {
-	num_nodes = num;
+	num_nodes = num; //must be even
 	unit = 0.05f;
 	center = Vec3D(0, 1, 0);
-	tension = 0.9f; //ratio between goal length and actual length of springs in row/col
+	rest_len = 0;
 
 	start_vertex_index = 0;
 	total_vertices = 0;
@@ -41,10 +41,10 @@ String::String(int num)
 
 String::String(int num, Vec3D pos)
 {
-	num_nodes = num;
+	num_nodes = num; //must be even
 	unit = 0.05f;
 	center = pos;
-	tension = 0.9f; //ratio between goal length and actual length of springs in row/col
+	rest_len = 0;
 
 	start_vertex_index = 0;
 	total_vertices = 0;
@@ -74,7 +74,26 @@ void String::setVertexInfo(int start, int total)
 /*----------------------------*/
 // GETTERS
 /*----------------------------*/
+int String::getNumNodes()
+{
+	return num_nodes;
+}
 
+float String::getUnit()
+{
+	return unit;
+}
+
+Node * String::getNode(int i)
+{
+	if (i < num_nodes && i >= 0) return nodes[i];
+	return nodes[num_nodes/2];
+}
+
+float String::getRestLen()
+{
+	return rest_len;
+}
 
 /*----------------------------*/
 // OTHERS
@@ -109,6 +128,7 @@ void String::initSprings()
 	for (int i = 0; i < num_springs; i++)
 	{
 		springs[i] = new Spring(nodes[i], nodes[i + 1], unit);
+		rest_len += springs[i]->getRestLen();
 	}
 }
 
