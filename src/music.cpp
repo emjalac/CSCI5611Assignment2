@@ -80,7 +80,8 @@ static int lastP = 0;
 //other globals
 const float mouse_speed = 0.05f;
 const float step_size = 0.15f;
-const int update_count = 2000; //should be larger (2000) but getting errors
+const int update_count = 2000;
+int string_index = 1; //default: pluck/strike string1
 
 /*=============================*/
 // Helper Functions
@@ -312,10 +313,44 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, MusicWorld* myWorld, floa
 	//PLUCK/STRIKE STRINGS
 	/////////////////////////////////
 	case SDLK_j:
-		myWorld->pluckString(1);
+		myWorld->pluckString(string_index);
 		break;
 	case SDLK_k:
-		myWorld->strikeString(1);
+		myWorld->strikeString(string_index);
+		break;
+	/////////////////////////////////
+	//CHANGE STRING INDEX WITH #S
+	/////////////////////////////////
+	case SDLK_1:
+	case SDLK_KP_1:
+		string_index = 1;
+		break;
+	case SDLK_2:
+	case SDLK_KP_2:
+		string_index = 2;
+		break;
+	case SDLK_3:
+	case SDLK_KP_3:
+		string_index = 3;
+		break;
+	case SDLK_4:
+	case SDLK_KP_4:
+		string_index = 4;
+		break;
+	/////////////////////////////////
+	//CHANGE NODE INDEX WITH +/-
+	/////////////////////////////////
+	case SDLK_EQUALS:
+		if (myWorld->getNodeIndex() < myWorld->getNodesPerString()-1)
+		{
+			myWorld->setNodeIndex(myWorld->getNodeIndex()+1);
+		}
+		break;
+	case SDLK_MINUS:
+		if (myWorld->getNodeIndex() > 0)
+		{
+			myWorld->setNodeIndex(myWorld->getNodeIndex()-1);
+		}
 		break;
 	default:
 		break;

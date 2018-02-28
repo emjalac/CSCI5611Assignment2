@@ -66,6 +66,7 @@ private:
 	WorldObject ** wobjs;
 	int cur_num_wobjs;
 	bool show_nodes;
+	Vec3D wind;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
@@ -75,10 +76,12 @@ public:
 
 	//SETTERS
 	void setShowNodes(bool b);
+	void setWind(Vec3D w);
 
 	//GETTERS
 	WorldObject ** getWobjList();
 	bool getShowNodes();
+	Vec3D getWind();
 
 	//OTHERS
 	bool loadModelData();

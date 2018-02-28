@@ -329,6 +329,17 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld, float dt)
 		myWorld->turnDragOff();
 		printf("Drag has been turned off.\n");
 		break;
+	/////////////////////////////////
+	//INCREASE/DECREASE WIND
+	/////////////////////////////////
+	case SDLK_EQUALS:
+		myWorld->setWind(myWorld->getWind() + Vec3D(100,0,0));
+		printf("Wind increased in the +x direction.\n");
+		break;
+	case SDLK_MINUS:
+		myWorld->setWind(myWorld->getWind() + Vec3D(-100,0,0));
+		printf("Wind increased in the -x direction.\n");
+		break;
 	default:
 		break;
 	}//END switch key press

@@ -19,6 +19,7 @@ World::World()
 	wobjs = new WorldObject*[max_num_wobjs];
 	cur_num_wobjs = 0;
 	show_nodes = false;
+	wind = Vec3D();
 }
 
 World::World(int max)
@@ -30,6 +31,7 @@ World::World(int max)
 	wobjs = new WorldObject*[max_num_wobjs];
 	cur_num_wobjs = 0;
 	show_nodes = false;
+	wind = Vec3D();
 }
 
 World::~World()
@@ -51,6 +53,11 @@ void World::setShowNodes(bool b)
 	show_nodes = b;
 }
 
+void World::setWind(Vec3D w)
+{
+	wind = w;
+}
+
 /*----------------------------*/
 // GETTERS
 /*----------------------------*/
@@ -62,6 +69,11 @@ WorldObject ** World::getWobjList()
 bool World::getShowNodes()
 {
 	return show_nodes;
+}
+
+Vec3D World::getWind()
+{
+	return wind;
 }
 
 /*----------------------------*/
@@ -299,7 +311,7 @@ void World::turnDragOff()
 
 void World::update(float dt)
 {
-	cloth->update(wobjs, cur_num_wobjs, gravity, dt);
+	cloth->update(wobjs, cur_num_wobjs, gravity, wind, dt);
 }
 
 /*----------------------------*/

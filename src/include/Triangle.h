@@ -38,8 +38,8 @@ public:
 
 	//OTHERS
 	Vec3D calculateNormal();
-	Vec3D calculateVelocity();
-	Vec3D calculateDrag();
+	Vec3D calculateVelocity(Vec3D wind);
+	Vec3D calculateDrag(Vec3D wind);
 	void updateNormal();
 	void draw(GLuint shaderProgram, int i);
 

@@ -216,18 +216,7 @@ void Cloth::releaseNodes()
 	}
 }
 
-void Cloth::releaseAllNodes()
-{
-	for (int i = 0; i < num_rows; i++)
-	{
-		for (int j = 0; j < num_cols; j++)
-		{
-			nodes[i][j]->release();
-		}
-	}
-}
-
-void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
+void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, Vec3D wind, float dt)
 {
 	//update node velocities with spring forces + gravity
 	for (int i = 0; i < num_springs; i++)
@@ -258,10 +247,8 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 	{
 		for (int i = 0; i < num_triangles; i++)
 		{
-			//printf("%i\n", i);
 			Triangle * cur_triangle = triangles[i];
-			Vec3D drag_force = cur_triangle->calculateDrag();
-
+			Vec3D drag_force = cur_triangle->calculateDrag(wind);
 
 			Node * n1 = cur_triangle->getV1();
 			Node * n2 = cur_triangle->getV2();
@@ -272,15 +259,15 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 
 			if (!(n1->isFixed()))
 			{
-				temp_vel1 = temp_vel1 + dt * (1/3 * 5000 * drag_force);
+				temp_vel1 = temp_vel1 + dt * (1/3 * drag_force);
 			}
 			if (!(n2->isFixed()))
 			{
-				temp_vel2 = temp_vel2 + dt * (1/3 * 5000 * drag_force);
+				temp_vel2 = temp_vel2 + dt * (1/3 * drag_force);
 			}
 			if (!(n3->isFixed()))
 			{
-				temp_vel3 = temp_vel3 + dt * (1/3 * 5000 * drag_force);
+				temp_vel3 = temp_vel3 + dt * (1/3 * drag_force);
 			}
 
 			n1->setVel(temp_vel1);
