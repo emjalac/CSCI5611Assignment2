@@ -237,11 +237,12 @@ void World::initCloth()
 	cloth->setVertexInfo(SPHERE_START, SPHERE_VERTS);
 	cloth->initNodes();
 	cloth->initSprings();
+	cloth->initTriangles();
 }
 
 void World::initWobjs()
 {
-	Sphere * sphere = new Sphere(Vec3D(0, 0, -2), 0.5);
+	Sphere * sphere = new Sphere(Vec3D(0, -.1, -2), 0.5);
 	sphere->setVertexInfo(SPHERE_START, SPHERE_VERTS);
 	sphere->setColor(Vec3D(1, 0, 0));
 	wobjs[cur_num_wobjs] = sphere;
@@ -261,6 +262,16 @@ void World::releaseCloth()
 void World::releaseClothFully()
 {
 	cloth->releaseAllNodes();
+}
+
+void World::turnDragOn()
+{
+	cloth->setDrag(true);
+}
+
+void World::turnDragOff()
+{
+	cloth->setDrag(false);
 }
 
 void World::update(float dt)

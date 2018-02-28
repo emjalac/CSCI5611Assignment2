@@ -86,6 +86,8 @@ public:
 	void fixCloth();
 	void releaseCloth();
 	void releaseClothFully();
+	void turnDragOn();
+	void turnDragOff();
 	void update(float dt);
 	void draw(Camera * cam);
 

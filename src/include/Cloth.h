@@ -4,6 +4,7 @@
 #include "Vec3D.h"
 #include "Node.h"
 #include "Spring.h"
+#include "Triangle.h"
 #include "WorldObject.h"
 
 class Cloth
@@ -17,8 +18,12 @@ private:
 
 	int num_nodes;
 	int num_springs;
+	int num_triangles;
 	Node *** nodes = NULL;
 	Spring ** springs = NULL;
+	Triangle ** triangles = NULL;
+
+	bool drag;
 
 	int start_vertex_index;	//index where vertices start in modelData array for nodes
 	int total_vertices;	//total num of vertices within modelData array for nodes
@@ -32,12 +37,15 @@ public:
 
 	//SETTERS
 	void setVertexInfo(int start, int total);
+	void setDrag(bool b);
 
 	//GETTERS
+	bool getDrag();
 
 	//OTHERS
 	void initNodes();
 	void initSprings(); //must call initNodes first
+	void initTriangles(); //must call initNodes first
 	void fixNodes();
 	void releaseNodes();
 	void releaseAllNodes();

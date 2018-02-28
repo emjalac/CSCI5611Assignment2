@@ -298,6 +298,17 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld, float dt)
 	case SDLK_l:
 		myWorld->releaseClothFully();
 		break;
+	/////////////////////////////////
+	//TURN DRAG ON/OFF
+	/////////////////////////////////
+	case SDLK_u:
+		myWorld->turnDragOn();
+		printf("Drag is now turned on.\n");
+		break;
+	case SDLK_i:
+		myWorld->turnDragOff();
+		printf("Drag has been turned off.\n");
+		break;
 	default:
 		break;
 	}//END switch key press

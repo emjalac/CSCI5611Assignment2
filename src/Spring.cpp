@@ -15,7 +15,7 @@ Spring::Spring()
 	node1 = new Node();
 	node2 = new Node();
 	ks = 200.0f;
-	kd = 200.0f;
+	kd = 180.0f;
 	tension = 0.85f;
 	rest_len = tension * 1.0f;
 }
@@ -25,7 +25,7 @@ Spring::Spring(Node * n1, Node * n2)
 	node1 = n1;
 	node2 = n2;
 	ks = 200.0f;
-	kd = 200.0f;
+	kd = 180.0f;
 	tension = 0.85f;
 	rest_len = tension * 1.0f;
 }
@@ -35,7 +35,7 @@ Spring::Spring(Node * n1, Node * n2, float unit)
 	node1 = n1;
 	node2 = n2;
 	ks = 200.0f;
-	kd = 200.0f;
+	kd = 180.0f;
 	tension = 0.85f;
 	rest_len = tension * unit;
 }

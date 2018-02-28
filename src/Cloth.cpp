@@ -22,12 +22,16 @@ Cloth::Cloth()
 
 	num_nodes = num_rows * num_cols;
 	num_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
+	num_triangles = (num_rows-1) * (num_cols-1) * 2;
 	nodes = new Node**[num_rows];
 	for (int i = 0; i < num_rows; i++)
 	{
 		nodes[i] = new Node*[num_cols];
 	}
 	springs = new Spring*[num_springs];
+	triangles = new Triangle*[num_triangles];
+
+	bool drag = false;
 }
 
 Cloth::Cloth(int rows, int cols)
@@ -43,12 +47,16 @@ Cloth::Cloth(int rows, int cols)
 
 	num_nodes = num_rows * num_cols;
 	num_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
+	num_triangles = (num_rows-1) * (num_cols-1) * 2;
 	nodes = new Node**[num_rows];
 	for (int i = 0; i < num_rows; i++)
 	{
 		nodes[i] = new Node*[num_cols];
 	}
 	springs = new Spring*[num_springs];
+	triangles = new Triangle*[num_triangles];
+
+	bool drag = false;
 }
 
 Cloth::Cloth(int rows, int cols, Vec3D pos)
@@ -64,12 +72,16 @@ Cloth::Cloth(int rows, int cols, Vec3D pos)
 
 	num_nodes = num_rows * num_cols;
 	num_springs = (num_rows-1) * num_cols + (num_cols-1) * num_rows;
+	num_triangles = (num_rows-1) * (num_cols-1) * 2;
 	nodes = new Node**[num_rows];
 	for (int i = 0; i < num_rows; i++)
 	{
 		nodes[i] = new Node*[num_cols];
 	}
 	springs = new Spring*[num_springs];
+	triangles = new Triangle*[num_triangles];
+
+	bool drag = false;
 }
 
 Cloth::~Cloth()
@@ -92,10 +104,18 @@ void Cloth::setVertexInfo(int start, int total)
 	total_vertices = total;
 }
 
+void Cloth::setDrag(bool b)
+{
+	drag = b;
+}
+
 /*----------------------------*/
 // GETTERS
 /*----------------------------*/
-
+bool Cloth::getDrag()
+{
+	return drag;
+}
 
 /*----------------------------*/
 // OTHERS
@@ -149,6 +169,22 @@ void Cloth::initSprings()
 	}
 }
 
+void Cloth::initTriangles()
+{
+	//IMPORTANT:
+	//ASSUMES INITNODES HAS ALREADY BEEN CALLED
+	
+	for (int i = 0; i < num_rows-1; i++)
+	{
+		for (int j = 0; j < num_cols-1; j++)
+		{
+			triangles[i * 2 * (num_cols-1) + 2 * j] = new Triangle(nodes[i][j],nodes[i+1][j],nodes[i][j+1]);
+			triangles[i * 2 * (num_cols-1) + 2 * j + 1] = new Triangle(nodes[i+1][j],nodes[i][j+1],nodes[i+1][j+1]);
+		}
+	}
+
+}
+
 void Cloth::fixNodes()
 {
 	for (int i = 0; i < num_rows; i++)
@@ -184,7 +220,7 @@ void Cloth::releaseAllNodes()
 
 void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 {
-	//update node velocities
+	//update node velocities with spring forces + gravity
 	for (int i = 0; i < num_springs; i++)
 	{
 		Spring * cur_spring = springs[i];
@@ -207,6 +243,43 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 		n1->setVel(temp_vel1);
 		n2->setVel(temp_vel2);
 	}
+
+	//update node velocities with drag forces
+	if (drag)
+	{
+		for (int i = 0; i < num_triangles; i++)
+		{
+			//printf("%i\n", i);
+			Triangle * cur_triangle = triangles[i];
+			Vec3D drag_force = cur_triangle->calculateDrag();
+
+
+			Node * n1 = cur_triangle->getV1();
+			Node * n2 = cur_triangle->getV2();
+			Node * n3 = cur_triangle->getV3();
+			Vec3D temp_vel1 = n1->getVel();
+			Vec3D temp_vel2 = n2->getVel();
+			Vec3D temp_vel3 = n3->getVel();
+
+			if (!(n1->isFixed()))
+			{
+				temp_vel1 = temp_vel1 + dt * (1/3 * 5000 * drag_force);
+			}
+			if (!(n2->isFixed()))
+			{
+				temp_vel2 = temp_vel2 + dt * (1/3 * 5000 * drag_force);
+			}
+			if (!(n3->isFixed()))
+			{
+				temp_vel3 = temp_vel3 + dt * (1/3 * 5000 * drag_force);
+			}
+
+			n1->setVel(temp_vel1);
+			n2->setVel(temp_vel2);
+			n3->setVel(temp_vel3);
+		}
+	}
+	
 	//update node positions
 	bool collided = false;
 	Vec3D collision_pos;
