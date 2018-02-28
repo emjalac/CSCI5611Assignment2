@@ -65,6 +65,7 @@ private:
 	int max_num_wobjs;
 	WorldObject ** wobjs;
 	int cur_num_wobjs;
+	bool show_nodes;
 
 public:
 	//CONSTRUCTORS AND DESTRUCTORS
@@ -73,10 +74,11 @@ public:
 	~World();
 
 	//SETTERS
-
+	void setShowNodes(bool b);
 
 	//GETTERS
 	WorldObject ** getWobjList();
+	bool getShowNodes();
 
 	//OTHERS
 	bool loadModelData();
@@ -85,7 +87,6 @@ public:
 	void initWobjs();
 	void fixCloth();
 	void releaseCloth();
-	void releaseClothFully();
 	void turnDragOn();
 	void turnDragOff();
 	void update(float dt);

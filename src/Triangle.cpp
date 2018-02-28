@@ -137,7 +137,7 @@ void Triangle::draw(GLuint shaderProgram, int i)
 		t4 = 1.0;
 		t5 = 0.0;
 		t6 = 0.0;
-		val = 1;
+		val = -1;
 	}
 	else
 	{
@@ -147,7 +147,7 @@ void Triangle::draw(GLuint shaderProgram, int i)
 		t4 = 0.0;
 		t5 = 0.0;
 		t6 = 1.0;
-		val = -1;
+		val = 1;
 	}
 
 	float vertices[24] = {

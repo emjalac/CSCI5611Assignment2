@@ -246,6 +246,8 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld, float dt)
 
 	WorldObject * wobj;
 
+	float step = step_size/2;
+
 	switch (event.keysym.sym)
 	{
 	/////////////////////////////////
@@ -268,22 +270,32 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld, float dt)
 	/////////////////////////////////
 	case SDLK_UP:
 		wobj = myWorld->getWobjList()[0];
-		wobj->setPos(wobj->getPos() + step_size*Vec3D(0,0,1));
+		wobj->setPos(wobj->getPos() + step*Vec3D(0,0,1));
 		myWorld->update(dt/100);
 		break;
 	case SDLK_LEFT:
 		wobj = myWorld->getWobjList()[0];
-		wobj->setPos(wobj->getPos() + step_size*Vec3D(1,0,0));
+		wobj->setPos(wobj->getPos() + step*Vec3D(1,0,0));
 		myWorld->update(dt/100);
 		break;
 	case SDLK_DOWN:
 		wobj = myWorld->getWobjList()[0];
-		wobj->setPos(wobj->getPos() + step_size*Vec3D(0,0,-1));
+		wobj->setPos(wobj->getPos() + step*Vec3D(0,0,-1));
 		myWorld->update(dt/100);
 		break;
 	case SDLK_RIGHT:
 		wobj = myWorld->getWobjList()[0];
-		wobj->setPos(wobj->getPos() + step_size*Vec3D(-1,0,0));
+		wobj->setPos(wobj->getPos() + step*Vec3D(-1,0,0));
+		myWorld->update(dt/100);
+		break;
+	case SDLK_RETURN:
+		wobj = myWorld->getWobjList()[0];
+		wobj->setPos(wobj->getPos() + step*Vec3D(0,1,0));
+		myWorld->update(dt/100);
+		break;
+	case SDLK_RSHIFT:
+		wobj = myWorld->getWobjList()[0];
+		wobj->setPos(wobj->getPos() + step*Vec3D(0,-1,0));
 		myWorld->update(dt/100);
 		break;
 	/////////////////////////////////
@@ -295,8 +307,16 @@ void onKeyDown(SDL_KeyboardEvent & event, Camera* cam, World* myWorld, float dt)
 	case SDLK_k:
 		myWorld->releaseCloth();
 		break;
-	case SDLK_l:
-		myWorld->releaseClothFully();
+	/////////////////////////////////
+	//SET DRAW TO NODES OR TRIANGLES
+	/////////////////////////////////
+	case SDLK_n:
+		myWorld->setShowNodes(true);
+		printf("Drawing nodes and springs only.\n");
+		break;
+	case SDLK_m:
+		myWorld->setShowNodes(false);
+		printf("Drawing textured cloth.\n");
 		break;
 	/////////////////////////////////
 	//TURN DRAG ON/OFF

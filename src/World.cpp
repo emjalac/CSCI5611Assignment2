@@ -18,6 +18,7 @@ World::World()
 	max_num_wobjs = 100;
 	wobjs = new WorldObject*[max_num_wobjs];
 	cur_num_wobjs = 0;
+	show_nodes = false;
 }
 
 World::World(int max)
@@ -28,6 +29,7 @@ World::World(int max)
 	max_num_wobjs = max;
 	wobjs = new WorldObject*[max_num_wobjs];
 	cur_num_wobjs = 0;
+	show_nodes = false;
 }
 
 World::~World()
@@ -44,7 +46,10 @@ World::~World()
 /*----------------------------*/
 // SETTERS
 /*----------------------------*/
-
+void World::setShowNodes(bool b)
+{
+	show_nodes = b;
+}
 
 /*----------------------------*/
 // GETTERS
@@ -52,6 +57,11 @@ World::~World()
 WorldObject ** World::getWobjList()
 {
 	return wobjs;
+}
+
+bool World::getShowNodes()
+{
+	return show_nodes;
 }
 
 /*----------------------------*/
@@ -221,16 +231,31 @@ void World::draw(Camera * cam)
 	glBindVertexArray(vao);
 
 	glUniform1i(uniTexID, 0); //Set texture ID to use (0 = cloth texture, -1 = no texture)
-
-	cloth->draw(shaderProgram, model_vbo[0], line_vbo[0]);
+	
+	if (show_nodes)
+	{
+		cloth->drawNodes(shaderProgram, model_vbo[0], line_vbo[0]);
+	}
+	else
+	{
+		cloth->drawTriangles(shaderProgram, model_vbo[0], line_vbo[0]);
+	}
 
 	glUniform1i(uniTexID, -1); //turn off texture for drawing wobjs
-	
+
 	for (int i = 0; i < cur_num_wobjs; i++)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, model_vbo[0]);
 		GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
+		//next 2 floats are texture coords (u,v)
+		GLint texAttrib = glGetAttribLocation(shaderProgram, "inTexcoord");
+		glEnableVertexAttribArray(texAttrib);
+		glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		//last 3 floats are normal coords
+		GLint normAttrib = glGetAttribLocation(shaderProgram, "inNormal");
+		glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+		glEnableVertexAttribArray(normAttrib);
 		wobjs[i]->draw(shaderProgram);
 	}
 }
@@ -260,11 +285,6 @@ void World::fixCloth()
 void World::releaseCloth()
 {
 	cloth->releaseNodes();
-}
-
-void World::releaseClothFully()
-{
-	cloth->releaseAllNodes();
 }
 
 void World::turnDragOn()

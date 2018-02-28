@@ -51,7 +51,8 @@ public:
 	void releaseNodes();
 	void releaseAllNodes();
 	void update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt);
-	void draw(GLuint shaderProgram, GLuint model_vbo, GLuint line_vbo);
+	void drawNodes(GLuint shaderProgram, GLuint model_vbo, GLuint line_vbo);
+	void drawTriangles(GLuint shaderProgram, GLuint model_vbo, GLuint line_vbo);
 
 };
 
