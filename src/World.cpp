@@ -120,11 +120,11 @@ bool World::setupGraphics()
 
 	//load in textures
 	#ifdef __APPLE__
-	tex0 = util::LoadTexture("../textures/wood.bmp");
+	tex0 = util::LoadTexture("../textures/cloth2.bmp");
 	tex1 = util::LoadTexture("../textures/grey_stones.bmp");
 	tex2 = util::LoadTexture("../textures/uniformclouds.bmp");
 	#else
-	tex0 = util::LoadTexture("textures/wood.bmp");
+	tex0 = util::LoadTexture("textures/cloth2.bmp");
 	tex1 = util::LoadTexture("textures/grey_stones.bmp");
 	tex2 = util::LoadTexture("textures/uniformclouds.bmp");
 	#endif
@@ -220,9 +220,12 @@ void World::draw(Camera * cam)
 
 	glBindVertexArray(vao);
 
-	glUniform1i(uniTexID, -1); //Set texture ID to use (0 = wood texture, -1 = no texture)
+	glUniform1i(uniTexID, 0); //Set texture ID to use (0 = cloth texture, -1 = no texture)
 
 	cloth->draw(shaderProgram, model_vbo[0], line_vbo[0]);
+
+	glUniform1i(uniTexID, -1); //turn off texture for drawing wobjs
+	
 	for (int i = 0; i < cur_num_wobjs; i++)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, model_vbo[0]);

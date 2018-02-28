@@ -180,9 +180,20 @@ void Cloth::initTriangles()
 		{
 			triangles[i * 2 * (num_cols-1) + 2 * j] = new Triangle(nodes[i][j],nodes[i+1][j],nodes[i][j+1]);
 			triangles[i * 2 * (num_cols-1) + 2 * j + 1] = new Triangle(nodes[i+1][j],nodes[i][j+1],nodes[i+1][j+1]);
+			triangles[i * 2 * (num_cols-1) + 2 * j]->setColor(Vec3D(0,0,1));
+			triangles[i * 2 * (num_cols-1) + 2 * j + 1]->setColor(Vec3D(0,0,1));
+			// triangles[i * 2 * (num_cols-1) + 2 * j]->setSpecular(Vec3D(1,1,1));
+			// triangles[i * 2 * (num_cols-1) + 2 * j + 1]->setSpecular(Vec3D(1,1,1));
 		}
 	}
+}
 
+void Cloth::updateTriangleNormals()
+{
+	for (int i = 0; i < num_triangles; i++)
+	{
+		triangles[i]->updateNormal();
+	}
 }
 
 void Cloth::fixNodes()
@@ -314,31 +325,53 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, float dt)
 			collided = false;
 		}
 	}
+
+	//update triangle normals
+	updateTriangleNormals();
 }
 
 void Cloth::draw(GLuint shaderProgram, GLuint model_vbo, GLuint line_vbo)
 {
-	//Set vbo for nodes
-	glBindBuffer(GL_ARRAY_BUFFER, model_vbo);
-	//Define position attribute
+	// //Set vbo for nodes
+	// glBindBuffer(GL_ARRAY_BUFFER, model_vbo);
+	// //Define position attribute
+	// GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+	// glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
+	// //Draw
+	// for (int i = 0; i < num_rows; i++)
+	// {
+	// 	for (int j = 0; j < num_cols; j++)
+	// 	{
+	// 		nodes[i][j]->draw(shaderProgram);
+	// 	}
+	// }
+	
+	// //Set vbo for springs
+	// glBindBuffer(GL_ARRAY_BUFFER, line_vbo);
+	// //Define position attribute
+	// glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+	// //Draw
+	// for (int i = 0; i < num_springs; i++)
+	// {
+	// 	springs[i]->draw(shaderProgram);
+	// }
+
+	//Use same vbo for triangles
+	//Uncomment the following if only drawing triangles:
+	glBindBuffer(GL_ARRAY_BUFFER, line_vbo);
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
+	//next 2 floats are texture coords (u,v)
+	GLint texAttrib = glGetAttribLocation(shaderProgram, "inTexcoord");
+	glEnableVertexAttribArray(texAttrib);
+	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	//last 3 floats are normal coords
+	GLint normAttrib = glGetAttribLocation(shaderProgram, "inNormal");
+	glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(normAttrib);
 	//Draw
-	for (int i = 0; i < num_rows; i++)
+	for (int i = 0; i < num_triangles; i++)
 	{
-		for (int j = 0; j < num_cols; j++)
-		{
-			nodes[i][j]->draw(shaderProgram);
-		}
-	}
-	
-	//Set vbo for springs
-	glBindBuffer(GL_ARRAY_BUFFER, line_vbo);
-	//Define position attribute
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
-	//Draw
-	for (int i = 0; i < num_springs; i++)
-	{
-		springs[i]->draw(shaderProgram);
+		triangles[i]->draw(shaderProgram, i%2);
 	}
 }

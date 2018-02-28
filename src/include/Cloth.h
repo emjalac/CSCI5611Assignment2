@@ -46,6 +46,7 @@ public:
 	void initNodes();
 	void initSprings(); //must call initNodes first
 	void initTriangles(); //must call initNodes first
+	void updateTriangleNormals();
 	void fixNodes();
 	void releaseNodes();
 	void releaseAllNodes();
