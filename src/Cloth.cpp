@@ -243,38 +243,38 @@ void Cloth::update(WorldObject ** wobjs, int num_wobjs, Vec3D g_force, Vec3D win
 	}
 
 	//update node velocities with drag forces
-	if (drag)
-	{
-		for (int i = 0; i < num_triangles; i++)
-		{
-			Triangle * cur_triangle = triangles[i];
-			Vec3D drag_force = cur_triangle->calculateDrag(wind);
+	// if (drag)
+	// {
+	// 	for (int i = 0; i < num_triangles; i++)
+	// 	{
+	// 		Triangle * cur_triangle = triangles[i];
+	// 		Vec3D drag_force = cur_triangle->calculateDrag(wind);
 
-			Node * n1 = cur_triangle->getV1();
-			Node * n2 = cur_triangle->getV2();
-			Node * n3 = cur_triangle->getV3();
-			Vec3D temp_vel1 = n1->getVel();
-			Vec3D temp_vel2 = n2->getVel();
-			Vec3D temp_vel3 = n3->getVel();
+	// 		Node * n1 = cur_triangle->getV1();
+	// 		Node * n2 = cur_triangle->getV2();
+	// 		Node * n3 = cur_triangle->getV3();
+	// 		Vec3D temp_vel1 = n1->getVel();
+	// 		Vec3D temp_vel2 = n2->getVel();
+	// 		Vec3D temp_vel3 = n3->getVel();
 
-			if (!(n1->isFixed()))
-			{
-				temp_vel1 = temp_vel1 + dt * (1/3 * drag_force);
-			}
-			if (!(n2->isFixed()))
-			{
-				temp_vel2 = temp_vel2 + dt * (1/3 * drag_force);
-			}
-			if (!(n3->isFixed()))
-			{
-				temp_vel3 = temp_vel3 + dt * (1/3 * drag_force);
-			}
+	// 		if (!(n1->isFixed()))
+	// 		{
+	// 			temp_vel1 = temp_vel1 + dt * (1/3 * drag_force);
+	// 		}
+	// 		if (!(n2->isFixed()))
+	// 		{
+	// 			temp_vel2 = temp_vel2 + dt * (1/3 * drag_force);
+	// 		}
+	// 		if (!(n3->isFixed()))
+	// 		{
+	// 			temp_vel3 = temp_vel3 + dt * (1/3 * drag_force);
+	// 		}
 
-			n1->setVel(temp_vel1);
-			n2->setVel(temp_vel2);
-			n3->setVel(temp_vel3);
-		}
-	}
+	// 		n1->setVel(temp_vel1);
+	// 		n2->setVel(temp_vel2);
+	// 		n3->setVel(temp_vel3);
+	// 	}
+	// }
 	
 	//update node positions
 	bool collided = false;

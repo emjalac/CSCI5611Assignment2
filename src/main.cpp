@@ -210,9 +210,9 @@ int main(int argc, char *argv[]) {
 			printf("FPS: %f\n", fps);
 			framecount = 0;
 		}
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 30; i++)
 		{
-			myWorld->update(delta_time/20);
+			myWorld->update(delta_time/12);
 		}
 
 		SDL_GL_SwapWindow(window);
